@@ -1,3 +1,4 @@
+` ` `python
 # =====================================================================
 # PROJETO DE EXTENSÃO: Monitoramento de Falhas em Motores Elétricos
 # OBJETIVO PRINCIPAL: Prever a probabilidade de falha nas próximas 24h
@@ -195,3 +196,4 @@ if probabilidade_falha > 0.7:
     print("\nAÇÃO RECOMENDADA: Agendar manutenção preventiva IMEDIATAMENTE.")
 else:
     print("\nAÇÃO RECOMENDADA: Manter monitoramento contínuo.")
+` ` `

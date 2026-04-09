@@ -34,32 +34,35 @@ print("Passo 1: Bibliotecas importadas com sucesso!")
 # COMO USAR O DADO REAL DEPOIS:
 # df = pd.read_csv('caminho/para/seu_arquivo_do_kaggle.csv')
 
-# --- INÍCIO DO BLOCO DE DADOS SINTÉTICOS (PROVISÓRIO) ---
-# Vamos criar 500 exemplos de motores simulando sensores (Vibração RMS e Temperatura Celsius)
-# E criar a coluna alvo "Falha_24h" (0 = Não Falhou, 1 = Falhou)
-np.random.seed(42) # Para que os dados aleatórios sejam sempre os mesmos ao rodar
+# --- INÍCIO DO BLOCO DE DADOS SINTÉTICOS CALIBRADOS (REALIDADE DO OTACÍLIO) ---
+# Simulando a realidade da Fan Liketec medida na bancada
+np.random.seed(42)
 n_amostras = 500
 
-# Simulando motores normais (baixa vibração, temperatura estável)
-vibracao_normal = np.random.normal(loc=2.5, scale=0.8, size=n_amostras // 2)
-temp_normal = np.random.normal(loc=50, scale=5, size=n_amostras // 2)
-falha_normal = np.zeros(n_amostras // 2) # Zero falhas
+# 1. MOTORES SAUDÁVEIS (Baseado nos seus testes iniciais)
+# Vibração em repouso perto de 11.0 com pequena oscilação
+vibracao_normal = np.random.normal(loc=11.0, scale=0.2, size=n_amostras // 2)
+# Temperatura ambiente/operacional estável (Vitoria, ES)
+temp_normal = np.random.normal(loc=30.0, scale=2.0, size=n_amostras // 2)
+falha_normal = np.zeros(n_amostras // 2)
 
-# Simulando motores prestes a falhar (alta vibração, alta temperatura)
-vibracao_falha = np.random.normal(loc=8.0, scale=2.0, size=n_amostras // 2)
-temp_falha = np.random.normal(loc=85, scale=10, size=n_amostras // 2)
-falha_falha = np.ones(n_amostras // 2) # Um falhas
+# 2. MOTORES EM ESTRESSE/FALHA (Baseado nos 45°C que você mediu)
+# Vibração aumenta e fica mais instável (espalhada)
+vibracao_falha = np.random.normal(loc=13.5, scale=1.5, size=n_amostras // 2)
+# Temperatura de estresse que você validou obstruindo a fan
+temp_falha = np.random.normal(loc=45.0, scale=3.0, size=n_amostras // 2)
+falha_falha = np.ones(n_amostras // 2)
 
-# Juntando tudo em um DataFrame do Pandas
+# Juntando no DataFrame
 df = pd.DataFrame({
     'vibracao_rms': np.concatenate([vibracao_normal, vibracao_falha]),
     'temperatura_c': np.concatenate([temp_normal, temp_falha]),
     'falha_24h': np.concatenate([falha_normal, falha_falha])
 })
 
-# Embaralhar os dados (para não ficarem organizados por tipo de motor)
+# Embaralhar para o treino da IA
 df = df.sample(frac=1).reset_index(drop=True)
-# --- FIM DO BLOCO DE DADOS SINTÉTICOS ---
+# --- FIM DO BLOCO CALIBRADO ---
 
 print("\nPasso 2: Dados carregados (Base Sintética criada para testes).")
 print(f"Total de registros: {len(df)}")
